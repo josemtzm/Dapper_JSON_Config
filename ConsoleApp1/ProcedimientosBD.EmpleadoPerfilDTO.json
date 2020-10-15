@@ -1,0 +1,64 @@
+{
+  "Nombre": "EmpleadoPerfilDTO",
+  "Procedimiento": "ENLACOMS.PKG_EJEMPLO_DAPPER.EMPLEADO_PERFILES",
+  "Parametros": [
+    {
+      "Nombre": "p_nomina",
+      "Tipo": "Varchar2",
+      "Direccion": "Input",
+      "AtributosEntd": {
+        "Atributo": "Nomina"
+      }
+    },
+    {
+      "Nombre": "p_empleado",
+      "Tipo": "RefCursor",
+      "Direccion": "Output",
+      "AtributosEntd": {
+        "Coleccion": "No"
+      }
+    },
+    {
+      "Nombre": "p_perfiles",
+      "Tipo": "RefCursor",
+      "Direccion": "Output",
+      "AtributosEntd": {
+        "Atributo": "Perfiles",
+        "AtributoTipo": "ConsoleApp1.PerfilesDTO",
+        "Coleccion": "Si"
+      }
+
+    },
+    {
+      "Nombre": "p_perfil",
+      "Tipo": "RefCursor",
+      "Direccion": "Output",
+      "AtributosEntd": {
+        "Atributo": "Perfil",
+        "AtributoTipo": "ConsoleApp1.PerfilesDTO",
+        "Coleccion": "No"
+      }
+
+    },
+    {
+      "Nombre": "p_estatus",
+      "Tipo": "Decimal",
+      "Direccion": "Output",
+      "Tamanio": 20,
+      "AtributosEntd": {
+        "Atributo": "Estatus",
+        "Coleccion": "No"
+      }
+    },
+    {
+      "Nombre": "p_mensaje",
+      "Tipo": "Varchar2",
+      "Direccion": "Output",
+      "Tamanio": 20,
+      "AtributosEntd": {
+        "Atributo": "Mensaje",
+        "Coleccion": "No"
+      }
+    }
+  ]
+}
