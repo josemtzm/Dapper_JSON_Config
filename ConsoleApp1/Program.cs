@@ -83,6 +83,7 @@ namespace ConsoleApp1
             string archivoSPJson = @"C:\Users\sygno.jmartinez\Downloads\ConsoleApp1 (1)\ConsoleApp1\ConsoleApp1\ProcedimientosBD.json";
             RootSP proc = null;
 
+            CargarJSON();
 
             using (StreamReader jsonStream = File.OpenText(archivoSPJson))
             {
@@ -98,10 +99,56 @@ namespace ConsoleApp1
             return proc;
         }
 
+        private static void CargarJSON()
+        {
+            // leer ProcedimientosDB archivo principal
+            //validar cada esquema archivo, mandar mendaje error por archivo invalido
+            //merge archivos
+            //regresar lstProcedimientos (listaprincipal)
+
+            JArray myArray = new JArray();
+            string archivoSPJson = @"C:\Users\sygno.jmartinez\Downloads\ConsoleApp1 (1)\ConsoleApp1\ConsoleApp1\ProcedimientosBD.json";
+            string folderPath = @"C:\Users\sygno.jmartinez\Downloads\ConsoleApp1 (1)\ConsoleApp1\ConsoleApp1\jsonSP";
+            bool valid = false;
+
+
+            foreach (string file in Directory.EnumerateFiles(folderPath, "*.json"))
+            {
+                string contents = File.ReadAllText(file);
+
+                //using (StreamReader jsonStream = File.OpenText(file))
+                //{
+                //    var jsonstring = jsonStream.ReadToEnd();
+
+                //    var jsonObject = JsonConvert.DeserializeObject(jsonstring);
+                //    myArray.Add(jsonObject);
+
+                //}
+
+                using (StreamReader jsonStream = File.OpenText(file))
+                using (JsonTextReader reader = new JsonTextReader(jsonStream))
+                {
+                    JSchema schema = JSchema.Load(reader);
+
+                    JObject sp = JObject.Parse(contents);
+
+                    valid = sp.IsValid(schema);
+
+                    if (valid)
+                    {
+                        //var jsonstring = jsonStream.ReadToEnd();
+                        //var jsonObject = JsonConvert.DeserializeObject(jsonstring);
+                        myArray.Add(sp);
+                    }
+                }
+            }
+        }
+
         private static bool EsquemaValido(string json)
         {
             bool valid = false;
             string archivoSPJson = @"C:\Users\sygno.jmartinez\Downloads\ConsoleApp1 (1)\ConsoleApp1\ConsoleApp1\ProcedimientosBD.json";
+
 
             //archivoSPJson = archivoSPJson.Replace("\r\n", "").Replace("\"", "")
 
@@ -120,7 +167,7 @@ namespace ConsoleApp1
                 // validate JSON
 
 
-                JObject sp = JObject.Parse(json);
+                JObject sp = JObject.Parse(archivoSPJson);
 
                 valid = sp.IsValid(schema);
             }

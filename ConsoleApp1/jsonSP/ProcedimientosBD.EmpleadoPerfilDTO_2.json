@@ -1,5 +1,5 @@
 {
-  "Nombre": "EmpleadoPerfilDTO",
+  "Nombre": "EmpleadoPerfilDTO_2",
   "Procedimiento": "ENLACOMS.PKG_EJEMPLO_DAPPER.EMPLEADO_PERFILES",
   "Parametros": [
     {
