@@ -4,6 +4,8 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Oracle.ManagedDataAccess.Client;
 using Oracle.ManagedDataAccess.Types;
+using RestSharp;
+using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,6 +17,11 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
+            //Console.WriteLine(EventsDateTimeRecipient().Content.ToString());
+
+            Console.WriteLine(SendSimpleMessage().Content.ToString());
+
+
             Console.WriteLine("Hello World!");
             RootSP lstProcedimientos = ProcedimientosJSON();
             
@@ -67,6 +74,43 @@ namespace ConsoleApp1
 
         }
 
+        public static IRestResponse SendSimpleMessage()
+        {
+            RestClient client = new RestClient();
+            client.BaseUrl = new Uri("https://api.mailgun.net/v3");
+            client.Authenticator =
+                new HttpBasicAuthenticator("api",
+                                            "key-d7feed7d320252bf49c2b0795fd895e5");
+            RestRequest request = new RestRequest();
+            request.AddParameter("domain", "sandboxf6f256184c6d4da5b9bc06788cadfa7a.mailgun.org", ParameterType.UrlSegment);
+            request.Resource = "{domain}/messages";
+            request.AddParameter("from", "Excited User <postmaster@sandboxf6f256184c6d4da5b9bc06788cadfa7a.mailgun.org>");
+            request.AddParameter("to", "sygno.jmartinez@proveedores21b.com");
+            request.AddParameter("to", "dhernandezma@xxi-banorte.com");
+            request.AddParameter("subject", "Hello");
+            request.AddParameter("text", "Testing some Mailgun awesomness!");
+            request.Method = Method.POST;
+            return client.Execute(request);
+        }
+
+        //public static IRestResponse EventsDateTimeRecipient()
+        //{
+        //    RestClient client = new RestClient();
+        //    client.BaseUrl = new Uri("https://api.mailgun.net/v3");
+        //    client.Authenticator =
+        //        new HttpBasicAuthenticator("api",
+        //                                    "key-d7feed7d320252bf49c2b0795fd895e5");
+        //    RestRequest request = new RestRequest();
+        //    request.AddParameter("domain", "sandboxf6f256184c6d4da5b9bc06788cadfa7a.mailgun.org", ParameterType.UrlSegment);
+        //    request.Resource = "{domain}/events";
+        //    request.AddParameter("begin", "Fri, 3 May 2013 09:00:00 -0000");
+        //    request.AddParameter("ascending", "yes");
+        //    request.AddParameter("limit", 25);
+        //    request.AddParameter("pretty", "yes");
+        //    request.AddParameter("recipient", "sygno.jmartinez@proveedores21b.com");
+        //    return client.Execute(request);
+        //}
+
         public static Type ListOfWhat(Object list)
         {
             return ListOfWhat2((dynamic)list);
@@ -110,6 +154,7 @@ namespace ConsoleApp1
             string archivoSPJson = @"C:\Users\sygno.jmartinez\Downloads\ConsoleApp1 (1)\ConsoleApp1\ConsoleApp1\ProcedimientosBD.json";
             string folderPath = @"C:\Users\sygno.jmartinez\Downloads\ConsoleApp1 (1)\ConsoleApp1\ConsoleApp1\jsonSP";
             bool valid = false;
+            RootSP proc = null;
 
 
             foreach (string file in Directory.EnumerateFiles(folderPath, "*.json"))
@@ -139,9 +184,17 @@ namespace ConsoleApp1
                         //var jsonstring = jsonStream.ReadToEnd();
                         //var jsonObject = JsonConvert.DeserializeObject(jsonstring);
                         myArray.Add(sp);
+
+                        //var jsonObject = JsonConvert.DeserializeObject(myArray);
+                        //proc = JsonConvert.DeserializeObject<RootSP>(jsonstring);
+
+
                     }
                 }
             }
+
+            var lista = myArray.ToObject<List<Procedimientos>>();
+
         }
 
         private static bool EsquemaValido(string json)
