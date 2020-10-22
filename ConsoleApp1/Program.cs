@@ -19,15 +19,16 @@ namespace ConsoleApp1
         {
             //Console.WriteLine(EventsDateTimeRecipient().Content.ToString());
 
-            Console.WriteLine(SendSimpleMessage().Content.ToString());
+            //Console.WriteLine(SendSimpleMessage().Content.ToString());
 
 
             Console.WriteLine("Hello World!");
             RootSP lstProcedimientos = ProcedimientosJSON();
-            
-            
-            /*Procedimientos proc = lstProcedimientos.Find(x => x.procedimientos[0].Nombre.Contains("EmpleadoPerfilDTO"))*/;
-            
+
+
+            /*Procedimientos proc = lstProcedimientos.Find(x => x.procedimientos[0].Nombre.Contains("EmpleadoPerfilDTO"))*/
+            ;
+
             CapaDatos capaDatos = new CapaDatos();
             EmpleadoPerfilDTO emp = new EmpleadoPerfilDTO();
             emp.Nomina = "10001595";
@@ -124,31 +125,16 @@ namespace ConsoleApp1
         private static RootSP ProcedimientosJSON()
         {
             //string archivoSPJson = @"D:\ProcedimientosBD1.json";
-            string archivoSPJson = @"C:\Users\sygno.jmartinez\Downloads\ConsoleApp1 (1)\ConsoleApp1\ConsoleApp1\ProcedimientosBD.json";
+            //string archivoSPJson = @"C:\Users\sygno.jmartinez\Downloads\ConsoleApp1 (1)\ConsoleApp1\ConsoleApp1\ProcedimientosBD.json";
             RootSP proc = null;
 
             CargarJSON();
 
-            using (StreamReader jsonStream = File.OpenText(archivoSPJson))
-            {
-                var jsonstring = jsonStream.ReadToEnd();
-
-                if (EsquemaValido(jsonstring))
-                {
-                    var jsonObject = JsonConvert.DeserializeObject(jsonstring);
-                    proc = JsonConvert.DeserializeObject<RootSP>(jsonstring);
-                }
-            }
-
             return proc;
         }
 
-        private static void CargarJSON()
+        private static List<Procedimientos> CargarJSON()
         {
-            // leer ProcedimientosDB archivo principal
-            //validar cada esquema archivo, mandar mendaje error por archivo invalido
-            //merge archivos
-            //regresar lstProcedimientos (listaprincipal)
 
             JArray myArray = new JArray();
             string archivoSPJson = @"C:\Users\sygno.jmartinez\Downloads\ConsoleApp1 (1)\ConsoleApp1\ConsoleApp1\ProcedimientosBD.json";
@@ -161,15 +147,6 @@ namespace ConsoleApp1
             {
                 string contents = File.ReadAllText(file);
 
-                //using (StreamReader jsonStream = File.OpenText(file))
-                //{
-                //    var jsonstring = jsonStream.ReadToEnd();
-
-                //    var jsonObject = JsonConvert.DeserializeObject(jsonstring);
-                //    myArray.Add(jsonObject);
-
-                //}
-
                 using (StreamReader jsonStream = File.OpenText(file))
                 using (JsonTextReader reader = new JsonTextReader(jsonStream))
                 {
@@ -181,13 +158,7 @@ namespace ConsoleApp1
 
                     if (valid)
                     {
-                        //var jsonstring = jsonStream.ReadToEnd();
-                        //var jsonObject = JsonConvert.DeserializeObject(jsonstring);
                         myArray.Add(sp);
-
-                        //var jsonObject = JsonConvert.DeserializeObject(myArray);
-                        //proc = JsonConvert.DeserializeObject<RootSP>(jsonstring);
-
 
                     }
                 }
@@ -195,124 +166,94 @@ namespace ConsoleApp1
 
             var lista = myArray.ToObject<List<Procedimientos>>();
 
+            return lista;
+
         }
 
-        private static bool EsquemaValido(string json)
+        public class CapaDatos
         {
-            bool valid = false;
-            string archivoSPJson = @"C:\Users\sygno.jmartinez\Downloads\ConsoleApp1 (1)\ConsoleApp1\ConsoleApp1\ProcedimientosBD.json";
+            public const string connectionString = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)" +
+                                                                "(HOST=15.128.25.150)(PORT=1521))" +
+                                                                "(CONNECT_DATA=(SERVICE_NAME=solidaD)));" +
+                                                                "User ID=fo;Password=afo2015";
 
-
-            //archivoSPJson = archivoSPJson.Replace("\r\n", "").Replace("\"", "")
-
-            //string archivoSPJson = json.Replace("\r\n", "").Replace("[", "{").Replace("]", "}");
-
-            //JSchema schema = JSchema.Parse(archivoSPJson);
-
-            //JSchema schema = JSchema.Parse(json);
-
-
-            using (StreamReader file = File.OpenText(archivoSPJson))
-            using (JsonTextReader reader = new JsonTextReader(file))
+            public void Generico(Procedimientos proc, ref EmpleadoPerfilDTO emp)
             {
-                JSchema schema = JSchema.Load(reader);
-
-                // validate JSON
-
-
-                JObject sp = JObject.Parse(archivoSPJson);
-
-                valid = sp.IsValid(schema);
-            }
-
-            return valid;
-        }
-
-    }
-
-    public class CapaDatos
-    {
-        public const string connectionString = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)" +
-                                                            "(HOST=15.128.25.150)(PORT=1521))" +
-                                                            "(CONNECT_DATA=(SERVICE_NAME=solidaD)));" +
-                                                            "User ID=fo;Password=afo2015";
-
-        public void Generico(Procedimientos proc, ref EmpleadoPerfilDTO emp)
-        {
-            using (OracleConnection cnn = new OracleConnection(connectionString))
-            {
-                cnn.Open();
-                var p = new OracleDynamicParameters();
-                //Asigna parametro de entrada
-                foreach (Parametros parametro in proc.Parametros)
+                using (OracleConnection cnn = new OracleConnection(connectionString))
                 {
-                    if (parametro.Direccion == ParameterDirection.InputOutput ||
-                        parametro.Direccion == ParameterDirection.Input)
+                    cnn.Open();
+                    var p = new OracleDynamicParameters();
+                    //Asigna parametro de entrada
+                    foreach (Parametros parametro in proc.Parametros)
                     {
-                        if (parametro.Valor == null)
+                        if (parametro.Direccion == ParameterDirection.InputOutput ||
+                            parametro.Direccion == ParameterDirection.Input)
                         {
-                            AtributoEntidad atrEnt = parametro.AtributosEntd;
-                            object valorAtributo = emp.GetType().GetProperty(atrEnt.Atributo).GetValue(emp, null);
+                            if (parametro.Valor == null)
+                            {
+                                AtributoEntidad atrEnt = parametro.AtributosEntd;
+                                object valorAtributo = emp.GetType().GetProperty(atrEnt.Atributo).GetValue(emp, null);
 
-                            p.Add(parametro.Nombre, valorAtributo, parametro.Tipo, parametro.Direccion, parametro.Tamanio);
+                                p.Add(parametro.Nombre, valorAtributo, parametro.Tipo, parametro.Direccion, parametro.Tamanio);
+                            }
+                            else
+                            {
+                                p.Add(parametro.Nombre, parametro.Valor, parametro.Tipo, parametro.Direccion, parametro.Tamanio);
+                            }
                         }
                         else
                         {
                             p.Add(parametro.Nombre, parametro.Valor, parametro.Tipo, parametro.Direccion, parametro.Tamanio);
                         }
                     }
-                    else
-                    {
-                        p.Add(parametro.Nombre, parametro.Valor, parametro.Tipo, parametro.Direccion, parametro.Tamanio);
-                    }
-                }
 
-                using (var multi = cnn.QueryMultiple(proc.Procedimiento,
-                        param: p, commandType: CommandType.StoredProcedure))
-                {
-                    //Asigna valores de salida a la entidad
-                    foreach (Parametros parametro in proc.Parametros)
+                    using (var multi = cnn.QueryMultiple(proc.Procedimiento,
+                            param: p, commandType: CommandType.StoredProcedure))
                     {
-                        if (parametro.Direccion == ParameterDirection.InputOutput ||
-                            parametro.Direccion == ParameterDirection.Output)
+                        //Asigna valores de salida a la entidad
+                        foreach (Parametros parametro in proc.Parametros)
                         {
-                            AtributoEntidad atrEnt = parametro.AtributosEntd;
-                            if (parametro.Tipo == OracleDbType.RefCursor)
+                            if (parametro.Direccion == ParameterDirection.InputOutput ||
+                                parametro.Direccion == ParameterDirection.Output)
                             {
-                                if (atrEnt.Atributo != null)
+                                AtributoEntidad atrEnt = parametro.AtributosEntd;
+                                if (parametro.Tipo == OracleDbType.RefCursor)
                                 {
-                                    //Type tipoLista = emp.GetType().GetProperty(atrEnt.Atributo).GetType();
-                                    //PerfilesDTO ppp = new PerfilesDTO();
-                                    //Type tipoLista2 = ppp.GetType();
-
-                                    Type tipoLista = Type.GetType(atrEnt.AtributoTipo);
-
-                                    if (atrEnt.Coleccion.Equals("Si"))
+                                    if (atrEnt.Atributo != null)
                                     {
-                                        List<PerfilesDTO> dd = multi.Read<PerfilesDTO>().AsList();
-                                        //dynamic dd = multi.Read(tipoLista).AsList();
-                                        emp.GetType().GetProperty(atrEnt.Atributo).SetValue(emp, dd);
-                                        //emp.Perfiles = multi.Read<PerfilesDTO>().AsList();
+                                        //Type tipoLista = emp.GetType().GetProperty(atrEnt.Atributo).GetType();
+                                        //PerfilesDTO ppp = new PerfilesDTO();
+                                        //Type tipoLista2 = ppp.GetType();
+
+                                        Type tipoLista = Type.GetType(atrEnt.AtributoTipo);
+
+                                        if (atrEnt.Coleccion.Equals("Si"))
+                                        {
+                                            List<PerfilesDTO> dd = multi.Read<PerfilesDTO>().AsList();
+                                            //dynamic dd = multi.Read(tipoLista).AsList();
+                                            emp.GetType().GetProperty(atrEnt.Atributo).SetValue(emp, dd);
+                                            //emp.Perfiles = multi.Read<PerfilesDTO>().AsList();
+                                        }
+                                        else
+                                        {
+                                            emp.GetType().GetProperty(atrEnt.Atributo).SetValue(emp, multi.ReadSingle(tipoLista));
+                                        }
                                     }
                                     else
                                     {
-                                        emp.GetType().GetProperty(atrEnt.Atributo).SetValue(emp, multi.ReadSingle(tipoLista));
+                                        emp = multi.ReadSingle<EmpleadoPerfilDTO>();
                                     }
                                 }
                                 else
                                 {
-                                    emp = multi.ReadSingle<EmpleadoPerfilDTO>();
-                                }
-                            }
-                            else
-                            {
-                                if (parametro.Tipo == OracleDbType.Varchar2)
-                                {
-                                    emp.GetType().GetProperty(atrEnt.Atributo).SetValue(emp, p.Get<OracleString>(parametro.Nombre).ToString());
-                                }
-                                if (parametro.Tipo == OracleDbType.Decimal)
-                                {
-                                    emp.GetType().GetProperty(atrEnt.Atributo).SetValue(emp, p.Get<OracleDecimal>(parametro.Nombre).ToInt32());
+                                    if (parametro.Tipo == OracleDbType.Varchar2)
+                                    {
+                                        emp.GetType().GetProperty(atrEnt.Atributo).SetValue(emp, p.Get<OracleString>(parametro.Nombre).ToString());
+                                    }
+                                    if (parametro.Tipo == OracleDbType.Decimal)
+                                    {
+                                        emp.GetType().GetProperty(atrEnt.Atributo).SetValue(emp, p.Get<OracleDecimal>(parametro.Nombre).ToInt32());
+                                    }
                                 }
                             }
                         }
@@ -321,6 +262,4 @@ namespace ConsoleApp1
             }
         }
     }
-
-
 }
