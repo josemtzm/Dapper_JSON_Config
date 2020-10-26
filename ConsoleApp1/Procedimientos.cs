@@ -7,11 +7,11 @@ namespace ConsoleApp1
 {
     public class Procedimientos
     {
-        [JsonProperty("Nombre")]
+        //[JsonProperty("Nombre")]
         public string Nombre { get; set; }
-        [JsonProperty("Procedimiento")]
+        //[JsonProperty("Procedimiento")]
         public string Procedimiento { get; set; }
-        [JsonProperty("Parametros")]
+        //[JsonProperty("Parametros")]
         public IList<Parametros> Parametros { get; set; }
 
     }

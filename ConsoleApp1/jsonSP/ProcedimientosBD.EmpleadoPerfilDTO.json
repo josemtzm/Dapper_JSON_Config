@@ -12,7 +12,7 @@
     },
     {
       "Nombre": "p_empleado",
-      "Tipo": "RefCursor",
+      "Tipo": "tests",
       "Direccion": "Output",
       "AtributosEntd": {
         "Coleccion": "No"

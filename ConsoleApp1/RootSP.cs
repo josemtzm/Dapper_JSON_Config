@@ -7,7 +7,7 @@ namespace ConsoleApp1
 {
     public class RootSP
     {
-        [JsonProperty("data")]
+        //[JsonProperty("data")]
         public List<Procedimientos> data { get; set; }
     }
 }

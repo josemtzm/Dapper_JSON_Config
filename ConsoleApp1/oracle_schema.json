@@ -1,0 +1,20 @@
+{
+  "description": "Schema paraSP en Oracle DataBase",
+  "type": "object",
+  "properties": {
+    "Nombre": { "type": "string" },
+    "Procedimiento": { "type": "string" },
+    "Parametros": {
+      "Nombre": { "type": "number" },
+      "Valor": { "type": "object" },
+      "Direccion": { "type": [] },
+      "Tamanio": { "type": "number" },
+      "AtributosEntd": { "type": [] },
+      "Tipo": {
+        "type": "string",
+        "enum": [ "Varchar2", "Decimal", "RefCursor" ]
+      }
+    }
+  },
+  "additionalProperties": false
+}
