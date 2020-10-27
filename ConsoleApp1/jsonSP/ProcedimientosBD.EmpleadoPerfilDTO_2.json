@@ -1,5 +1,6 @@
 {
-  "Nombre": "EmpleadoPerfilDTO_2",
+  "ID": "EmpleadoPerfilDTO",
+  "Nombre": "EmpleadoPerfilDTO_3",
   "Procedimiento": "ENLACOMS.PKG_EJEMPLO_DAPPER.EMPLEADO_PERFILES",
   "Parametros": [
     {
@@ -12,7 +13,7 @@
     },
     {
       "Nombre": "p_empleado",
-      "Tipo": "RefCursor",
+      "Tipo": "Varchar2",
       "Direccion": "Output",
       "AtributosEntd": {
         "Coleccion": "No"
@@ -20,7 +21,7 @@
     },
     {
       "Nombre": "p_perfiles",
-      "Tipo": "RefCursor",
+      "Tipo": "Varchar2",
       "Direccion": "Output",
       "AtributosEntd": {
         "Atributo": "Perfiles",

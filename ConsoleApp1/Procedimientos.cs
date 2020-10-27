@@ -7,6 +7,7 @@ namespace ConsoleApp1
 {
     public class Procedimientos
     {
+        public string ID { get; set; }
         //[JsonProperty("Nombre")]
         public string Nombre { get; set; }
         //[JsonProperty("Procedimiento")]

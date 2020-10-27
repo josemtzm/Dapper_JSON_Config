@@ -16,6 +16,7 @@
   "dependencies": {
     "ID": [ "Nombre" ],
     "Nombre": [ "ID" ]
+    //si es output que tenga tamanio
   },
   "additionalProperties": false,
 
@@ -61,7 +62,7 @@
           ]
         },
         "Direccion": {
-          "enum": [ "Input", "Output" ]
+          "enum": [ "Input", "Output", "InputOutput", "ReturnValue" ]
         },
         "AtributosEntd": {
           "type": "object",

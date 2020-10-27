@@ -180,23 +180,36 @@ namespace ConsoleApp1
                 //{
                 //JSchema schema = JSchema.Parse(schemaJson);
 
-                
+
 
                 //JObject sp = JObject.Parse(@"{
                 //      'name': null,
                 //      'hobbies': ['Invalid content', 0.123456789]
                 //    }");
+
+                string @namespace = "ConsoleApp1";
+                string @class;
+
                 JObject sp = JObject.Parse(File.ReadAllText(file));
 
                 IList<string> messages;
-                    valid = sp.IsValid(schema, out messages);
+                valid = sp.IsValid(schema, out messages);
 
-                    if (valid)
-                    {
+                // todos (validacion atomica)
+                if (valid)
+                {
+                    @class = sp["Nombre"].ToString();
+                    var myClassType = Type.GetType(String.Format("{0}.{1}", @namespace, @class));
+                    object instance = myClassType == null ? null : Activator.CreateInstance(myClassType); //Check if exists, instantiate if so.
+
+                    if (instance != null)
                         myArray.Add(sp);
 
-                    }
-                    //}
+                }
+                else { 
+                // mandar a logger errores del json
+                }
+                //}
                 //}
 
                 var lista = myArray.ToObject<List<Procedimientos>>();
