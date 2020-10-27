@@ -2,19 +2,89 @@
   "description": "Schema paraSP en Oracle DataBase",
   "type": "object",
   "properties": {
+    "ID": { "type": "string" },
     "Nombre": { "type": "string" },
     "Procedimiento": { "type": "string" },
     "Parametros": {
-      "Nombre": { "type": "number" },
-      "Valor": { "type": "object" },
-      "Direccion": { "type": [] },
-      "Tamanio": { "type": "number" },
-      "AtributosEntd": { "type": [] },
-      "Tipo": {
-        "type": "string",
-        "enum": [ "Varchar2", "Decimal", "RefCursor" ]
-      }
+      "type": "array",
+      "items": { "$ref": "#/definitions/Parametros" }
     }
   },
-  "additionalProperties": false
+
+  "required": [ "ID", "Nombre", "Procedimiento", "Parametros" ],
+
+  "dependencies": {
+    "ID": [ "Nombre" ],
+    "Nombre": [ "ID" ]
+  },
+  "additionalProperties": false,
+
+  "definitions": {
+    "Parametros": {
+      "type": "object",
+      "required": [ "Nombre", "Tipo", "Direccion", "AtributosEntd" ],
+      "properties": {
+        "Nombre": {
+          "type": "string"
+        },
+        "Tipo": {
+          "enum": [
+            "BFile",
+            "Blob",
+            "Byte",
+            "Char",
+            "Clob",
+            "Date",
+            "Decimal",
+            "Double",
+            "Long",
+            "LongRaw",
+            "Int16",
+            "Int32",
+            "Int64",
+            "IntervalDS",
+            "IntervalYM",
+            "NClob",
+            "NChar",
+            "NVarchar2",
+            "Raw",
+            "RefCursor",
+            "Single",
+            "TimeStamp",
+            "TimeStampLTZ",
+            "TimeStampTZ",
+            "Varchar2",
+            "XmlType",
+            "BinaryDouble",
+            "BinaryFloat",
+            "Boolean"
+          ]
+        },
+        "Direccion": {
+          "enum": [ "Input", "Output" ]
+        },
+        "AtributosEntd": {
+          "type": "object",
+          "items": { "$ref": "#/definitions/AtributosEntd" }
+        },
+        "Tamanio": {
+          "type": "number"
+        }
+      }
+    },
+    "AtributosEntd": {
+      "type": "object",
+      "properties": {
+        "Atributo": {
+          "type": "string"
+        },
+        "AtributoTipo": {
+          "type": "string"
+        },
+        "Coleccion": {
+          "type": "string"
+        }
+      }
+    }
+  }
 }
